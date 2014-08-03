@@ -1,84 +1,83 @@
 #!/usr/bin/python
 
+#Script to generate table of next 5 shifts
+
+import sys
 import MySQLdb
-import datetime
-
-def findDay(input):
-        days = ["null","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-        retThis = days[input]
-        return(retThis)
-
-def toBool(testBit):
-        if testBit == 0:
-                retThis = '<div style="display:inline;color:#75b775">No</div>'
-        else:
-                retThis = '<div style="display:inline;color:#c44242">Yes</div>'
-	return retThis
-
-def stripDigs(time):
-        lastIndex = str(time).rindex(":")
-        outString = str(time)[:lastIndex]
-        return outString
-
-def convertDates(date):
-        date = str(date)
-        day = date[date.rindex("-") + 1:]
-        month = date[date.index("-") + 1:date.index("-") + 3]
-        year = date[:4]
-        return """%s-%s-%s""" % (str(day), str(month), str(year))
-
-def convertVals(listIn):
-	listOut = []
-#	print "listinvalue =" + str(listIn[0])
-	listOut.append(findDay(listIn[0]))
-	listOut.append(convertDates(listIn[1]))
-	listOut.append(stripDigs(listIn[2]))
-	listOut.append(stripDigs(listIn[3]))
-	listOut.append(toBool(listIn[4]))
-	return listOut
-
-def returnDecimalSecsVal(timeIn):
-	[hours, minutes, seconds] = [int(x) for x in str(timeIn).split(':')]
-	secsOut = datetime.timedelta(hours=hours, minutes=minutes, seconds=seconds)
-	return secsOut.seconds
+import datetime		#If these need explaining, you need to (re)learn python....
 
 
-db = MySQLdb.connect(host="localhost",
-                        user="work",
-                        passwd="letmelookatthehours!",
-                        db="work")
+host = "localhost"		#MySQL server hostname
+uname = "work"			#Username
+pword = "letmelookatthehours!"	#Password	
+db = "work"			#Database to connect to
+query = "SELECT date, start, end, susan FROM hours ORDER BY date ASC LIMIT 5;"	#Query to run against the MySQL database
+dFormat = "%d %b %Y"	#Format of date to print
+tFormatA = "%I:%M %p"	#Format of actual time, not duration
+rate = 6.57	#How much you're paid/hour
 
-cur = db.cursor()
+class table:
+	newTable = "<table class=" + chr(34) + "hover" + chr(34) + ">"
+	endTable = "</table>"
+	newRow = "<tr>"
+	newHeadRow = "<tr id=bottom>"
+	endRow = "</tr>"
+	newCol = "<td>"
+	endCol = "</td>"
 
-cur.execute("SELECT day, date, start, duration, susan FROM hours ORDER BY date ASC LIMIT 5;")
-#print "Content-Type: text/html\n"
-print '<table class="hover"><bold><tr id="bottom"><td>Day</td><td>Date</td><td>Start Time</td><td>Duration</td><td>Susan</td><td>Earnings</td></tr></bold>'
+#TABLE HEADERS
+headers = ["Day", "Date", "Start Time", "Duration", "Susan", "Earned"]
 
+def convToTime(timedeltaObj):		#Do some fancy stuff I found on StackOverflow to get a datetime.time object from a datetime.timedelta object
+	val = timedeltaObj
+	dt = datetime.datetime
+	return (dt.min + val).time()
+
+def genSusanCol(bool):
+	if bool == 0:
+		return table.newCol + "<div style=" + chr(34) + "display:inline;color:" + chr(35) + "75b775" + chr(34) + ">No</div>" + table.endCol
+	elif bool == 1:
+		return table.newCol + '<div style=' + chr(34) + "display:inline;color:" + chr(35) + "C44242" + chr(34) + ">Yes</div>" + table.endCol
+
+def earned(secs):
+	sys.stderr.write(str(secs.seconds) + "\n")
+	mins = secs.seconds / 60
+	hours = mins / 60
+	return (hours * rate)
+
+def createDur(date, start, end):
+	return datetime.datetime.combine(date, end) - datetime.datetime.combine(date, start)
+
+def generateTable(shiftList):		#Function to create the whole table, nothing more, nothing less.
+	print table.newTable		#Write the opening tag
+	print table.newHeadRow		#Create the row for the headers
+	for header in headers:		#Loop through the headers
+		print table.newCol		#New column
+		print header			#Write the header
+		print table.endCol		#Close column
+	print table.endRow		#End the headers row
+
+	for shift in shiftList:			#Loop through the results from the MySQL query
+		print table.newRow			#Create a new row every time a new set of results is looped to
+		print table.newCol			#Create a new column
+		print shift['date'].strftime("%A")	#Print the day of the week
+		print table.endCol, table.newCol	#Close the last column and start another
+		print shift['date'].strftime(dFormat)	#Write the date as specified in the variable
+		print table.endCol, table.newCol	#Close the last column and start another
+		startTime = convToTime(shift['start'])
+		endTime = convToTime(shift['end'])
+		print startTime.strftime(tFormatA)	#Print the start time
+		print table.endCol, table.newCol	#Close the last column and start another
+		dur = createDur(shift['date'], startTime, endTime)
+		print str(dur) + table.endCol		#Print the duration and close the column
+		print genSusanCol(shift['susan'])	#Print the whole susan column
+		print table.newCol			#Start a new column
+		print chr(163) + str(earned(dur))	#Print the amount earned for the shift
+
+	print table.endTable
+
+dbCon = MySQLdb.connect(host,uname,pword,db)
+cur = dbCon.cursor(MySQLdb.cursors.DictCursor)
+cur.execute(query)
 results = cur.fetchall()
-
-totalMoneyList = []
-
-for x in results:
-	print "<tr>"
-	newList = convertVals(x)
-	for y in newList:
-		print "<td>" + str(y) + "</td>"
-	hhmmss = x[3]
-	money = str(returnDecimalSecsVal(x[3]) / 3600 * 6.57)
-	totalMoneyList.append(money)
-	print "<td>" + chr(163) + money + "</td>"
-	print "</tr>"
-
-print "<tr>"
-
-totalMoney = 0
-
-for day in totalMoneyList:
-	totalMoney = totalMoney + float(day)	
-
-for i in range(4):
-	print "<td></td>"
-print "<td>TOTAL:</td>"
-print "<td>", chr(163), totalMoney, "</td>"
-print "</tr>"
-print "</table>"
+generateTable(results)
