@@ -5,7 +5,7 @@
 import sys
 import MySQLdb
 import datetime		#If these need explaining, you need to (re)learn python....
-
+from shiftCore import shiftCore
 
 host = "localhost"		#MySQL server hostname
 uname = "work"			#Username
@@ -16,14 +16,7 @@ dFormat = "%d %b %Y"	#Format of date to print
 tFormatA = "%I:%M %p"	#Format of actual time, not duration
 rate = 6.57	#How much you're paid/hour
 
-class table:
-	newTable = "<table class=" + chr(34) + "hover" + chr(34) + ">"
-	endTable = "</table>"
-	newRow = "<tr>"
-	newHeadRow = "<tr id=bottom>"
-	endRow = "</tr>"
-	newCol = "<td>"
-	endCol = "</td>"
+
 
 #TABLE HEADERS
 headers = ["Day", "Date", "Start Time", "Duration", "Susan", "Earned"]
@@ -35,9 +28,9 @@ def convToTime(timedeltaObj):		#Do some fancy stuff I found on StackOverflow to 
 
 def genSusanCol(bool):
 	if bool == 0:
-		return table.newCol + "<div style=" + chr(34) + "display:inline;color:" + chr(35) + "75b775" + chr(34) + ">No</div>" + table.endCol
+		return shiftCore.table.newCol + "<div style=" + chr(34) + "display:inline;color:" + chr(35) + "75b775" + chr(34) + ">No</div>" + shiftCore.table.endCol
 	elif bool == 1:
-		return table.newCol + '<div style=' + chr(34) + "display:inline;color:" + chr(35) + "C44242" + chr(34) + ">Yes</div>" + table.endCol
+		return shiftCore.table.newCol + '<div style=' + chr(34) + "display:inline;color:" + chr(35) + "C44242" + chr(34) + ">Yes</div>" + shiftCore.table.endCol
 
 def earned(secs):
 	sys.stderr.write(str(secs.seconds) + "\n")
@@ -49,32 +42,32 @@ def createDur(date, start, end):
 	return datetime.datetime.combine(date, end) - datetime.datetime.combine(date, start)
 
 def generateTable(shiftList):		#Function to create the whole table, nothing more, nothing less.
-	print table.newTable		#Write the opening tag
-	print table.newHeadRow		#Create the row for the headers
+	print shiftCore.table.newTable		#Write the opening tag
+	print shiftCore.table.newHeadRow		#Create the row for the headers
 	for header in headers:		#Loop through the headers
-		print table.newCol		#New column
+		print shiftCore.table.newCol		#New column
 		print header			#Write the header
-		print table.endCol		#Close column
-	print table.endRow		#End the headers row
+		print shiftCore.table.endCol		#Close column
+	print shiftCore.table.endRow		#End the headers row
 
 	for shift in shiftList:			#Loop through the results from the MySQL query
-		print table.newRow			#Create a new row every time a new set of results is looped to
-		print table.newCol			#Create a new column
+		print shiftCore.table.newRow			#Create a new row every time a new set of results is looped to
+		print shiftCore.table.newCol			#Create a new column
 		print shift['date'].strftime("%A")	#Print the day of the week
-		print table.endCol, table.newCol	#Close the last column and start another
+		print shiftCore.table.endCol, shiftCore.table.newCol	#Close the last column and start another
 		print shift['date'].strftime(dFormat)	#Write the date as specified in the variable
-		print table.endCol, table.newCol	#Close the last column and start another
+		print shiftCore.table.endCol, shiftCore.table.newCol	#Close the last column and start another
 		startTime = convToTime(shift['start'])
 		endTime = convToTime(shift['end'])
 		print startTime.strftime(tFormatA)	#Print the start time
-		print table.endCol, table.newCol	#Close the last column and start another
+		print shiftCore.table.endCol, shiftCore.table.newCol	#Close the last column and start another
 		dur = createDur(shift['date'], startTime, endTime)
-		print str(dur) + table.endCol		#Print the duration and close the column
+		print str(dur) + shiftCore.table.endCol		#Print the duration and close the column
 		print genSusanCol(shift['susan'])	#Print the whole susan column
-		print table.newCol			#Start a new column
+		print shiftCore.table.newCol			#Start a new column
 		print chr(163) + str(earned(dur))	#Print the amount earned for the shift
 
-	print table.endTable
+	print shiftCore.table.endTable
 
 dbCon = MySQLdb.connect(host,uname,pword,db)
 cur = dbCon.cursor(MySQLdb.cursors.DictCursor)

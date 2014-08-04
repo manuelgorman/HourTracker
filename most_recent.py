@@ -41,7 +41,7 @@ db = MySQLdb.connect(host="localhost",
                         passwd="letmelookatthehours!",
                         db="work")
 
-cur = db.cursor()
+cur = db.cursor(MySQLdb.cursors.DictCursor)
 
 cur.execute("SELECT * FROM hours ORDER BY date ASC LIMIT 1;")
 #print "Content-Type: text/html\n"
@@ -57,4 +57,11 @@ for x in cur.fetchall():
 	end = stripDigs(x[4])
 	susan = toBool(x[5])
 
-print '''<div class="hover" id="day">%s</div><div id="date" class="hover">%s</div><div id="newline"><div id="start" class="hover" class="A">Start:<div class="B">%s</div></div><div id="duration" class="hover">Length:<div class="B">%s</div></div><div class="hover" id="end">End:<div class="B">%s</div></div><div class="hover" id="susan">Susan:<div class="B">%s</div></div><div class="hover" id="Earned">Earnings:<div class="B">%s</div></div></div>''' % (day, date, start, durat, end, susan, chr(163) + str(returnEarnedMonies(fulldurat,6.57)))
+print '''<div class="hover" id="day">%s</div><div id="date" class="hover">%s</div>
+<div id="newline">
+<div id="start" class="hover" class="A">Start:<div class="B">%s</div></div>
+<div id="duration" class="hover">Length:<div class="B">%s</div></div>
+<div class="hover" id="end">End:<div class="B">%s</div></div>
+<div class="hover" id="susan">Susan:<div class="B">%s</div></div>
+<div class="hover" id="Earned">Earnings:<div class="B">%s</div></div>
+</div>''' % (day, date, start, durat, end, susan, chr(163) + str(returnEarnedMonies(fulldurat,6.57)))
