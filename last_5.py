@@ -34,7 +34,7 @@ def genSusanCol(bool):
 
 def earned(secs):
 	sys.stderr.write(str(secs.seconds) + "\n")
-	mins = secs.seconds / 60
+	mins = int(secs.seconds) / 60
 	hours = mins / 60
 	return (hours * rate)
 
