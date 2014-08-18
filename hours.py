@@ -10,7 +10,7 @@ host = "localhost"
 uname = "work"
 pword = "letmelookatthehours!"
 db = "work"
-query = "SELECT * FROM hours LIMIT %s" % (num)
+query = "SELECT * FROM hours LIMIT %s" % (arguments['results'])
 
 class Shift():
 	def __init__(self,date,start,end,susan): #Acquire the values for an arbitrary shift
