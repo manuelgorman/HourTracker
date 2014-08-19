@@ -43,7 +43,7 @@ class Shift():
 		dict["duration"] = self.convToTime(self.duration).strftime("%H:%M")	#Format to "[24 hour time]:[Minute]" okay its kind of hacky because its a duration but who cares, i'm the only one that's going to use this anyway
 		dict["end"] = self.end.strftime("%I:%M %p")							#Format to "[12 hour time]:[Minute] [AM or PM]
 		dict["susan"] = self.susan											#Send a good ol' boolean
-		dict["earned"] = chr(163) + str(self.earned)						#Add a £ symbol to the start of the earned number
+		dict["earned"] = str(self.earned)									#Send the amount you earn
 		return dict															#Send the dictionary on its merry way
 
 class Table:
