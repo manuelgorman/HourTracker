@@ -16,18 +16,29 @@
          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
       <![endif]--> <!--Why the fuck is there IE8 support, that should never be a thing -->
 	  <script>
-		$(document).ready(function() {
-			$.getJSON("/cgi-bin/hours.py?results=1&type=json",function( data ){
-				var tableOut="<table class='table'><tr><td>Day</td><td>Start</td><td>Duration</td><td>End</td><td>You earn</td></tr>";
+		results = 4
+		function displayShifts(results){
+			$.getJSON("/cgi-bin/hours.py?results=" + results + "&type=json",function( data ){
+				var tableOut="<table class='table' id='delete'><tr><th>Day</th><th>Start</th><th>Duration</th><th>End</th><th>You earn</th></tr>";
 				for (var shift in data){
 					tableOut+="<tr><td>" + data[shift].date + "</td><td>" + data[shift].start + "</td><td>" + data[shift].duration + "</td><td>" + data[shift].end + "</td><td>" + String.fromCharCode(163) + data[shift].earned + "</td>";
 					}
 				tableOut+="</tr>";
+				if ($('#delete')) {$('#delete').remove();}
 				$('.tbl').append(tableOut);
 				});
-		});
+		}
+		
+		function go(){
+			displayShifts($('#shiftsToGet').val());
+			}
+		$(document).ready(function(){go();});
 	  </script>
-	  
+	  <style>
+		input[type=text] {width:20px;}
+		input {display:inline;}
+		td {margin:auto !important;}
+	  </style>
 	</head>
 	<body>
 		<script src="/js/bootstrap.min.js"></script>
@@ -38,6 +49,11 @@
 			<div class="row">
 			</div>
 			<div class="row">
+				<div class="col-xs-1">
+				<h4>Settings</h4>
+				<p>Shifts: <input id="shiftsToGet" type="text" value="1"></p>
+				<p><input type="button" value="Submit" onclick="go();"></P>
+				</div>
 				<div class="col-lg-1 tbl">
 				</div>
 			</div>
