@@ -73,7 +73,7 @@ for shift in rawShifts:
 
 requestedOutput = str(arguments["type"].value).upper()	#Just being tidy!
 	
-if requestedOutput == "TABLE":	#Send a table in HTML if requested
+if requestedOutput == "TABLE":	#Send a table in HTML if requested - will be deprecated shortly
 	#generateTable(shifts)	I'll get to this bit later
 	pass
 	
