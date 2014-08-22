@@ -11,6 +11,8 @@ cgitb.enable()
 
 arguments = cgi.FieldStorage()	#Store HTTP GET arguments in 'arguments' variable
 
+hourlyRate = 6.57 	
+
 ### MySQL server settings ###
 host = "localhost"
 uname = "work"
@@ -31,7 +33,7 @@ class Shift():
 		self.start = self.convToTime(start)
 		self.end = self.convToTime(end)
 		self.duration = datetime.datetime.combine(self.date, self.end) - datetime.datetime.combine(self.date, self.start) #Get the difference between the two time (needs to be a datetime.datetime object for the subtraction, so just use the date of the shift)
-		self.earned = round((self.duration.total_seconds() * 6.57) / 3600, 2) #Calculate earnings from the total seconds and round to 2 d.p.
+		self.earned = round((self.duration.total_seconds() * hourlyRate) / 3600, 2) #Calculate earnings from the total seconds and round to 2 d.p.
 				
 	def convToTime(self,timedeltaObj):		#Do some fancy stuff I found on StackOverflow to get a datetime.time object from a datetime.timedelta object
 		dt = datetime.datetime
