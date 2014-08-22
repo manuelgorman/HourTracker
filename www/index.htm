@@ -37,7 +37,7 @@
 		$(document).ready(function(){go();});
 	  </script>
 	  <style>
-		input[type=text] {width:20px;}
+		input[type=number] {width:40px;}
 		input {display:inline;}
 		td {margin:auto !important;}
 	  </style>
@@ -46,20 +46,22 @@
 		<script src="/js/bootstrap.min.js"></script>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-12">
-					<h1>Shift</h1>
-				</div>
+				<ul class="list-inline">
+					<li>Home</li>
+					<li>Shift</li>
+				</ul>
 			</div>
 			<div class="row">
-				<div class="col-md-12">
-				<p>Menu goes here</p>
+				<div class="col-md-12"><div class="col-md-12">
+					<h1>Shift <small>Working Hours Presentation System</h1>
+				</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-2">
 				<h4>Settings</h4>
-				<p>Shifts: <input id="shiftsToGet" type="text" value="1"></p>
-				<p><input type="button" value="Submit" onclick="go();"></P>
+				<p>Shifts: <input id="shiftsToGet" type="number" value="1"></p>
+				<p><button type="button" class="btn btn-default" onclick="go();">Get Shifts</button></P>
 				</div>
 				<div class="col-md-10 tbl">
 				</div>
