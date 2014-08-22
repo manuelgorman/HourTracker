@@ -21,9 +21,7 @@
 			$.getJSON("/cgi-bin/hours.py?results=" + results + "&type=json",function( data ){
 				var tableOut="<table class='table table-hover' id='delete'><tr><th>Day</th><th>Start</th><th>Duration</th><th>End</th><th>You earn</th></tr>";
 				for (var shift in data){
-					var rowClass = ""
-					if (data[shift].susan == true) {rowClass="class='danger'";}
-					tableOut+="<tr " + rowClass + "'><td>" + data[shift].date + "</td><td>" + data[shift].start + "</td><td>" + data[shift].duration + "</td><td>" + data[shift].end + "</td><td>" + String.fromCharCode(163) + data[shift].earned + "</td>";
+					tableOut+="<tr><td>" + data[shift].date + "</td><td>" + data[shift].start + "</td><td>" + data[shift].duration + "</td><td>" + data[shift].end + "</td><td>" + String.fromCharCode(163) + data[shift].earned + "</td>";
 					}
 				tableOut+="</tr>";
 				if ($('#delete')) {$('#delete').remove();}

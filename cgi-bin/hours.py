@@ -22,14 +22,10 @@ query = "SELECT * FROM hours LIMIT %s" % (arguments['results'].value)
 
 class Shift():
 	"docstring"		#I know I'm a bad person
-	def __init__(self,date,start,end,susan): #Acquire the values for an arbitrary shift
+	def __init__(self,date,start,end): #Acquire the values for an arbitrary shift
 		self.date = date
 		self.rawStart = start
 		self.rawEnd = end
-		if susan == 1:
-			self.susan = True
-		elif susan == 0:
-			self.susan = False
 		self.start = self.convToTime(start)
 		self.end = self.convToTime(end)
 		self.duration = datetime.datetime.combine(self.date, self.end) - datetime.datetime.combine(self.date, self.start) #Get the difference between the two time (needs to be a datetime.datetime object for the subtraction, so just use the date of the shift)
@@ -44,7 +40,6 @@ class Shift():
 		dict["start"] = self.start.strftime("%I:%M %p")						#Format to "[12 hour time]:[Minute] [AM or PM]
 		dict["duration"] = self.convToTime(self.duration).strftime("%H:%M")	#Format to "[24 hour time]:[Minute]" okay its kind of hacky because its a duration but who cares, i'm the only one that's going to use this anyway
 		dict["end"] = self.end.strftime("%I:%M %p")							#Format to "[12 hour time]:[Minute] [AM or PM]
-		dict["susan"] = self.susan											#Send a good ol' boolean
 		dict["earned"] = chr(163) + str(self.earned)						#Add a £ symbol to the start of the earned number
 		return dict															#Send the dictionary on its merry way
 
@@ -70,7 +65,7 @@ shifts = []
 
 #Iterate through results making an instance of the Shift object and append each instance of the Shift object to the list of shifts I CALLED TOO MANY THINGS SHIFT OH GOD
 for shift in rawShifts:
-	shiftInstance = Shift(shift['date'],shift['start'],shift['end'],shift['susan'])
+	shiftInstance = Shift(shift['date'],shift['start'],shift['end'])
 	shifts.append(shiftInstance)	#Append the object to the list
 
 requestedOutput = str(arguments["type"].value).upper()	#Just being tidy!
