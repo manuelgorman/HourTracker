@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	  
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media 
         queries -->
@@ -34,6 +34,7 @@
 			}
 		$(document).ready(function(){go();});
 	  </script>
+	  	  <link rel=stylesheet type=text/css href="/style.css">
 	  <style>
 		input[type=number] {width:40px;}
 		input {display:inline;}
@@ -43,20 +44,15 @@
 	<body>
 		<script src="/js/bootstrap.min.js"></script>
 		<div class="container">
-			<div class="row">
-				<ul class="list-inline">
-					<li>Home</li>
-					<li>Shift</li>
-				</ul>
-			</div>
+			<script src="/js/navbar.js"></script>
 			<div class="row">
 				<div class="col-md-12"><div class="col-md-12">
-					<h1>Shift <small>Working Hours Presentation System</h1>
+					<h1>Shift <small>Yes, sadly you have to work</small></h1>
 				</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-2">
+				<div class="col-md-2 sidebar">
 				<h4>Settings</h4>
 				<p>Shifts: <input id="shiftsToGet" type="number" value="1"></p>
 				<p><button type="button" class="btn btn-default" onclick="go();">Get Shifts</button></P>
