@@ -70,16 +70,17 @@ for shift in rawShifts:
 
 requestedOutput = str(arguments["type"].value).upper()	#Just being tidy!
 	
-if requestedOutput == "TABLE":	#Send a table in HTML if requested - will be deprecated shortly
-	#generateTable(shifts)	I'll get to this bit later
-	pass
-	
-elif requestedOutput == "JSON":
+if requestedOutput == "JSON":
 	JSONShiftList = []
 	for shift in shifts:
 		JSONShiftList.append(shift.dictionary())
 	sys.stderr.write(str(JSONShiftList))
-	print "Content-Type: text/plain"	#Plain text is following (actually JSON but they don't need to know that)
+	print "Content-Type: application/json"	#Plain text is following (actually JSON but they don't need to know that)  EDIT: now they get to know its json 
 	print								#Blank line, end of headers
 	print json.dumps(JSONShiftList)		#Excrete what is hopefully JSON to whoever wants it
 
+elif requestedOutput == "ARDUINO":
+	print "Content-Type: text/plain"	#We genuinely are sending plain text this time, they must be so happy
+	print
+	print 
+	pass
